@@ -88,6 +88,8 @@ module DatabaseCleaner
           DatabaseCleaner::CouchPotato
         when :sequel
           DatabaseCleaner::Sequel
+        when :cassandra
+          DatabaseCleaner::Cassandra
       end
     end
   end
