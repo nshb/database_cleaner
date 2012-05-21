@@ -3,7 +3,7 @@ require 'database_cleaner/generic/truncation'
 require 'database_cleaner/mongo/truncation'
 
 module DatabaseCleaner
-  module Mongoid
+  module Cassandra
     class Truncation
       include ::DatabaseCleaner::Cassandra::Base
       include ::DatabaseCleaner::Generic::Truncation
@@ -20,13 +20,11 @@ module DatabaseCleaner
       private
 
       def collections
-        database.collections.select { |c| c.name !~ /^system\./ }
+        database.column_families
       end
 
-      private
-
       def database
-        ::Cassandra.database
+        ::Cassandra.client
       end
 
     end
