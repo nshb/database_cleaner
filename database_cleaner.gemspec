@@ -70,6 +70,8 @@ Gem::Specification.new do |s|
      "lib/database_cleaner/mongo_mapper/truncation.rb",
      "lib/database_cleaner/mongoid/base.rb",
      "lib/database_cleaner/mongoid/truncation.rb",
+     "lib/database_cleaner/cassandra/base.rb",
+     "lib/database_cleaner/cassandra/truncation.rb",
      "lib/database_cleaner/null_strategy.rb",
      "lib/database_cleaner/sequel/base.rb",
      "lib/database_cleaner/sequel/transaction.rb",
