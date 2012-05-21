@@ -47,6 +47,13 @@ describe ::DatabaseCleaner do
       cleaner.orm.should == :couch_potato
       ::DatabaseCleaner.connections.size.should == 1
     end
+
+    it "should accept :cassandra" do
+      cleaner = ::DatabaseCleaner[:cassandra]
+      cleaner.should be_a(::DatabaseCleaner::Base)
+      cleaner.orm.should == :cassandra
+      ::DatabaseCleaner.connections.size.should == 1
+    end
   end
 
   it "should accept multiple orm's" do
@@ -288,6 +295,11 @@ describe ::DatabaseCleaner do
     it "should return DatabaseCleaner::CouchPotato for :couch_potato" do
       ::DatabaseCleaner::CouchPotato = mock("cp module") unless defined? ::DatabaseCleaner::CouchPotato
       subject.orm_module(:couch_potato).should == DatabaseCleaner::CouchPotato
+    end
+
+    it "should return DatabaseCleaner::Cassandra for :cassandra" do
+      ::DatabaseCleaner::Cassandra = mock("cassandra module") unless defined? ::DatabaseCleaner::Cassandra
+      subject.orm_module(:cassandra).should == DatabaseCleaner::Cassandra
     end
 
   end

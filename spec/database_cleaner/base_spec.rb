@@ -4,6 +4,7 @@ require 'database_cleaner/data_mapper/transaction'
 require 'database_cleaner/mongo_mapper/truncation'
 require 'database_cleaner/mongoid/truncation'
 require 'database_cleaner/couch_potato/truncation'
+require 'database_cleaner/cassandra/truncation'
 
 module DatabaseCleaner
   describe Base do
@@ -18,6 +19,7 @@ module DatabaseCleaner
          Temp_MO = ::Mongoid      if defined?(::Mongoid)      and not defined?(Temp_MO)
          Temp_CP = ::CouchPotato  if defined?(::CouchPotato)  and not defined?(Temp_CP)
          Temp_SQ = ::Sequel       if defined?(::Sequel)       and not defined?(Temp_SQ)
+         Temp_CS = ::Cassandra    if defined?(::Cassandra)    and not defined?(Temp_CS)
        end
 
        #Remove all ORM mocks and restore from cache
@@ -28,6 +30,7 @@ module DatabaseCleaner
          Object.send(:remove_const, 'Mongoid')      if defined?(::Mongoid)
          Object.send(:remove_const, 'CouchPotato')  if defined?(::CouchPotato)
          Object.send(:remove_const, 'Sequel')       if defined?(::Sequel)
+         Object.send(:remove_const, 'Cassandra')    if defined?(::Cassandra)
 
 
          # Restore ORMs
@@ -36,6 +39,7 @@ module DatabaseCleaner
          ::MongoMapper  = Temp_MM if defined? Temp_MM
          ::Mongoid      = Temp_MO if defined? Temp_MO
          ::CouchPotato  = Temp_CP if defined? Temp_CP
+         ::Cassandra    = Temp_CS if defined? Temp_CS
        end
 
        #reset the orm mocks
@@ -46,6 +50,7 @@ module DatabaseCleaner
          Object.send(:remove_const, 'Mongoid')      if defined?(::Mongoid)
          Object.send(:remove_const, 'CouchPotato')  if defined?(::CouchPotato)
          Object.send(:remove_const, 'Sequel')       if defined?(::Sequel)
+         Object.send(:remove_const, 'Cassandra')       if defined?(::Cassandra)
        end
        
        let(:cleaner) { DatabaseCleaner::Base.new :autodetect }
@@ -61,6 +66,7 @@ module DatabaseCleaner
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
          Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :active_record
          cleaner.should be_auto_detected
@@ -72,6 +78,7 @@ module DatabaseCleaner
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
          Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :data_mapper
          cleaner.should be_auto_detected
@@ -82,6 +89,7 @@ module DatabaseCleaner
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
          Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :mongo_mapper
          cleaner.should be_auto_detected
@@ -91,6 +99,7 @@ module DatabaseCleaner
          Object.const_set('Mongoid',     'Mongoid mock')
          Object.const_set('CouchPotato', 'Couching mock potatos')
          Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :mongoid
          cleaner.should be_auto_detected
@@ -99,15 +108,24 @@ module DatabaseCleaner
        it "should detect CouchPotato fifth" do
          Object.const_set('CouchPotato', 'Couching mock potatos')
          Object.const_set('Sequel',      'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :couch_potato
          cleaner.should be_auto_detected
        end
        
-       it "should detect Sequel last" do
+       it "should detect Sequel sixth" do
          Object.const_set('Sequel', 'Sequel mock')
+         Object.const_set('Cassandra',   'Cassandra mock')
 
          cleaner.orm.should == :sequel
+         cleaner.should be_auto_detected
+       end
+
+       it "should detect Cassandra seventh" do
+         Object.const_set('Cassandra',   'Cassandra mock')
+
+         cleaner.orm.should == :cassandra
          cleaner.should be_auto_detected
        end
     end
@@ -486,6 +504,11 @@ module DatabaseCleaner
       it 'sets strategy to :truncation for CouchPotato' do
         cleaner = DatabaseCleaner::Base.new(:couch_potato)
         cleaner.strategy.should be_instance_of DatabaseCleaner::CouchPotato::Truncation
+      end
+
+      it 'sets strategy to :truncation for Cassandra' do
+        cleaner = DatabaseCleaner::Base.new(:cassandra)
+        cleaner.strategy.should be_instance_of DatabaseCleaner::Cassandra::Truncation
       end
     end
 

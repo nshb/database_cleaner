@@ -1,5 +1,8 @@
 == 0.7.x (in git)
 
+== 0.7.3 2012-05-21
+  * Added Cassandra support (Nathan Brown)
+
 == 0.7.2 2012-03-21
 
   * Proper Mysql2Adapter superclass fix. (Jonathan Viney)
