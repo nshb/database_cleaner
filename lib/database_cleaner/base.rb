@@ -120,6 +120,8 @@ module DatabaseCleaner
           :couch_potato
         elsif defined? ::Sequel
           :sequel
+        elsif defined? ::Cassandra
+          :cassandra
         else
           raise NoORMDetected, "No known ORM was detected!  Is ActiveRecord, DataMapper, Sequel, MongoMapper, Mongoid, or CouchPotato loaded?"
         end
@@ -130,7 +132,7 @@ module DatabaseCleaner
       case orm
       when :active_record, :data_mapper, :sequel
         self.strategy = :transaction
-      when :mongo_mapper, :mongoid, :couch_potato
+      when :mongo_mapper, :mongoid, :couch_potato, :cassandra
         self.strategy = :truncation
       end
     end

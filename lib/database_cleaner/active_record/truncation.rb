@@ -147,6 +147,3 @@ module DatabaseCleaner::ActiveRecord
 
   end
 end
-
-
-
