@@ -10,9 +10,15 @@ module DatabaseCleaner
 
       def clean
         if @only
-          collections.each { |c| c.remove if @only.include?(c.name) }
+          collections.each_pair { |name, c| 
+            puts '[TRUNCATION] ' + name
+            ::ActiveColumn.column_family_tasks.drop(name) if name != 'system' && @only.include?(name)
+          }
         else
-          collections.each { |c| c.remove unless @tables_to_exclude.include?(c.name) }
+          collections.each_pair { |name, c| 
+            puts '[TRUNCATION] ' + name
+            ::ActiveColumn.column_family_tasks.drop(name) unless name == 'system' || @tables_to_exclude.include?(name)
+            }
         end
         true
       end
@@ -24,7 +30,7 @@ module DatabaseCleaner
       end
 
       def database
-        ::Cassandra.client
+        ::ActiveColumn.connection
       end
 
     end
